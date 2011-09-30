@@ -2,6 +2,7 @@
 /local
 /lib
 /lib_managed
+/project
 /out
 
 # Eclipse, Netbeans and IntelliJ files
