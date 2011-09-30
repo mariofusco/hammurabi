@@ -1,0 +1,17 @@
+/target
+/local
+/lib
+/lib_managed
+/out
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+!.gitignore
+/nbproject
+/*.ipr
+/*.iws
+/*.iml
+/.idea
+
+# Repository wide ignore mac DS_Store files
+.DS_Store
