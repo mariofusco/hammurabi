@@ -1,5 +1,7 @@
 package hammurabi
 
+import scala.language.implicitConversions
+
 /**
  * @author Mario Fusco
  */

@@ -1,11 +1,12 @@
 package hammurabi
 
-import scala.util.control.Exception._
-import scala.collection._
+import hammurabi.Rule._
+import hammurabi.util.Func._
+import hammurabi.util.Logger
 
-import Rule._
-import util.Logger
-import util.Func._
+import scala.collection._
+import scala.language.reflectiveCalls
+import scala.util.control.Exception._
 
 /**
  * @author Mario Fusco
