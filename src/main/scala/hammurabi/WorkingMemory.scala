@@ -1,7 +1,9 @@
 package hammurabi
 
-import collection.mutable.HashMap
-import util.Logger
+import hammurabi.util.Logger
+
+import scala.collection.mutable
+import scala.language.postfixOps
 
 /**
  * @author Mario Fusco
@@ -11,17 +13,16 @@ class WorkingMemory(var workingSet: List[_]) extends Logger {
 
   def this() = this(Nil)
 
-  val workingSetsByType = new HashMap[Class[_], List[_]]
+  val workingSetsByType = new mutable.HashMap[Class[_], List[_]]
 
   def all[A](clazz: Class[A]): List[A] = {
     val c = normalizeClass(clazz)
     (workingSetsByType get c match {
       case objects: Some[_] => objects get
-      case None => {
+      case None =>
         val t = findObjectsOfClass(c)
         workingSetsByType += (c -> t)
         t
-      }
     }).asInstanceOf[List[A]]
   }
 
@@ -72,7 +73,7 @@ class WorkingMemory(var workingSet: List[_]) extends Logger {
   }
 
   private def findObjectsOfClass[A](clazz: Class[A]) = {
-    workingSet filter (_.asInstanceOf[AnyRef].getClass() == clazz)
+    workingSet filter (_.asInstanceOf[AnyRef].getClass == clazz)
   }
 
   private def normalizedClassOf(item: Any): Class[_] =
@@ -86,7 +87,7 @@ class WorkingMemory(var workingSet: List[_]) extends Logger {
     else classOf[java.lang.Boolean]
 
   private def normalizeClass(c: Class[_]): Class[_] =
-    if (classOf[AnyRef].isAssignableFrom((c))) c
+    if (classOf[AnyRef].isAssignableFrom(c)) c
     else if (c == classOf[Int]) classOf[java.lang.Integer]
     else if (c == classOf[Long]) classOf[java.lang.Long]
     else if (c == classOf[Double]) classOf[java.lang.Double]

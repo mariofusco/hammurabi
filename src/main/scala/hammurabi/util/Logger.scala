@@ -1,4 +1,4 @@
-package hammurabi.util;
+package hammurabi.util
 
 import org.slf4j.LoggerFactory
 
