@@ -1,7 +1,18 @@
 package hammurabi
-
-import org.scalatest.{FlatSpec, Matchers}
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 import hammurabi.Rule._
+import org.scalatest.{FlatSpec, Matchers}
+
+import scala.language.reflectiveCalls
 
 /**
  * @author Mario Fusco
@@ -11,6 +22,7 @@ import hammurabi.Rule._
 class RuleEngineSpec extends FlatSpec with Matchers {
 
   "All items from working set" should "belong to expected type" in {
+
     val joe = new MutablePerson("Joe")
     val fred = new MutablePerson("Fred")
     val tom = new MutablePerson("Tom")
