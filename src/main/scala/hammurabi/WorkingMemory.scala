@@ -1,7 +1,18 @@
 package hammurabi
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+import hammurabi.util.Logger
 
-import collection.mutable.HashMap
-import util.Logger
+import scala.collection.mutable
+import scala.language.postfixOps
 
 /**
  * @author Mario Fusco
@@ -11,29 +22,27 @@ class WorkingMemory(var workingSet: List[_]) extends Logger {
 
   def this() = this(Nil)
 
-  val workingSetsByType = new HashMap[Class[_], List[_]]
+  val workingSetsByType = new mutable.HashMap[Class[_], List[_]]
 
   def all[A](clazz: Class[A]): List[A] = {
     val c = normalizeClass(clazz)
     (workingSetsByType get c match {
       case objects: Some[_] => objects get
-      case None => {
+      case None =>
         val t = findObjectsOfClass(c)
         workingSetsByType += (c -> t)
         t
-      }
     }).asInstanceOf[List[A]]
   }
-
   def first[A](implicit manifest: Manifest[A]): Option[A] =
-    firstOrNone(all(manifest.erasure.asInstanceOf[Class[A]]))
+    firstOrNone(all(manifest.runtimeClass.asInstanceOf[Class[A]]))
 
   def allHaving[A](clazz: Class[A])(condition: A => Boolean): List[A] = {
     all(clazz) filter condition
   }
 
   def firstHaving[A](condition: A => Boolean)(implicit manifest: Manifest[A]): Option[A] =
-    firstOrNone(allHaving(manifest.erasure.asInstanceOf[Class[A]])(condition))
+    firstOrNone(allHaving(manifest.runtimeClass.asInstanceOf[Class[A]])(condition))
 
   private def firstOrNone[A](list: List[A]): Option[A] = list match {
     case x :: xs => Some(x)
@@ -72,7 +81,7 @@ class WorkingMemory(var workingSet: List[_]) extends Logger {
   }
 
   private def findObjectsOfClass[A](clazz: Class[A]) = {
-    workingSet filter (_.asInstanceOf[AnyRef].getClass() == clazz)
+    workingSet filter (_.asInstanceOf[AnyRef].getClass == clazz)
   }
 
   private def normalizedClassOf(item: Any): Class[_] =
@@ -86,7 +95,7 @@ class WorkingMemory(var workingSet: List[_]) extends Logger {
     else classOf[java.lang.Boolean]
 
   private def normalizeClass(c: Class[_]): Class[_] =
-    if (classOf[AnyRef].isAssignableFrom((c))) c
+    if (classOf[AnyRef].isAssignableFrom(c)) c
     else if (c == classOf[Int]) classOf[java.lang.Integer]
     else if (c == classOf[Long]) classOf[java.lang.Long]
     else if (c == classOf[Double]) classOf[java.lang.Double]
